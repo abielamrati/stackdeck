@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  apache:
+    image: httpd:latest
+    container_name: apache-web-server
+    ports:
+      - 8081:80  # Maps port 8080 on your host to port 80 on the container
+    volumes:
+      - /Volumes/docker/apache:/usr/local/apache2/htdocs/  # Serve the local directory `./www` 
+      - /Volumes/docker/apache/config:/usr/local/apache2/conf.d/
+    restart: unless-stopped
