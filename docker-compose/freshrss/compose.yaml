@@ -1,0 +1,38 @@
+---
+services:
+  freshrss:
+    image: freshrss/freshrss:latest
+    container_name: freshrss
+    hostname: freshrss
+    ports:
+      - "8080:80"
+    logging:
+      options:
+        max-size: 10m
+    volumes:
+      - /Volumes/docker/freshrss/data:/var/www/FreshRSS/data
+      - /Volumes/docker/freshrss/extensions:/var/www/FreshRSS/extensions
+    environment:
+      TZ: Europe/Paris
+      CRON_MIN: '3,33'
+    restart: unless-stopped
+  freshrss-db:
+    image: postgres:16
+    container_name: freshrss_postgres
+    hostname: freshrss-db
+    logging:
+      options:
+        max-size: 10m
+    volumes:
+      - /Volumes/docker/freshrss/db:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command:
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - work_mem=32MB
+    restart: unless-stopped
