@@ -1,0 +1,88 @@
+---
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8112:8112
+      - 1080:1080        # SOCKS5 Proxy
+      - 8888:8888
+    volumes:
+      - /Volumes/docker/multimedia/gluetun/:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=pia         # ou pia, nordvpn, etc.
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=p7125336
+      - OPENVPN_PASSWORD=n9WbAPXA79
+      - REGION=Switzerland
+ #     - OPENVPN_CUSTOM_CONFIG=/gluetun/openvpn/pia/sweden-aes-128-cbc-udp-dns.ovpn
+      - VPN_PORT_FORWARDING=on
+      - FIREWALL=on                         # 🔐 killswitch activé
+      - PROXY_SOCKS=on                      # 🧦 active SOCKS5 proxy
+      - TZ=Europe/Paris
+    restart: unless-stopped
+
+  deluge:
+    image: linuxserver/deluge:latest
+    container_name: deluge
+    network_mode: "service:gluetun"  # 🔗 partage réseau avec gluetun
+    environment:
+      - PUID=501  #elamrati on macmini
+      - PGID=20
+      - TZ=Europe/Paris
+    volumes:
+      - /Volumes/docker/multimedia/deluge/config/:/config
+      - /Volumes/colisee/downloads/:/downloads
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports:
+      - "8096:8096"
+    volumes:
+      - /Volumes/docker/multimedia/jellyfin/config:/config
+      - /Volumes/docker/multimedia/jellyfin/cache:/cache
+      - /Volumes/colisee:/media
+    restart: always
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      PUID: 501
+      PGID: 20
+    volumes:
+      - /Volumes/docker/multimedia/jackett/config:/config
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      PUID: 501
+      PGID: 20
+    volumes:
+      - /Volumes/docker/multimedia/radarr/config:/config
+      - /Volumes/colisee/movies:/movies
+      - /Volumes/colisee/downloads:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      PUID: 501
+      PGID: 20
+    volumes:
+      - /Volumes/docker/multimedia/sonarr/config:/config
+      - /Volumes/colisee/series:/tv
+      - /Volumes/colisee/downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
