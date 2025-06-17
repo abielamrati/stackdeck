@@ -9,7 +9,7 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /Volumes/docker/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - /Volumes/docker/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
     restart: unless-stopped
     networks:
       - frontend
