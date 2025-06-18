@@ -10,8 +10,8 @@ services:
       options:
         max-size: 10m
     volumes:
-      - /Volumes/docker/freshrss/data:/var/www/FreshRSS/data
-      - /Volumes/docker/freshrss/extensions:/var/www/FreshRSS/extensions
+      - ${FRESHRSS_CONFIG_PATH}/data:/var/www/FreshRSS/data
+      - ${FRESHRSS_CONFIG_PATH}/extensions:/var/www/FreshRSS/extensions
     environment:
       TZ: Europe/Paris
       CRON_MIN: '3,33'
@@ -24,7 +24,7 @@ services:
       options:
         max-size: 10m
     volumes:
-      - /Volumes/docker/freshrss/db:/var/lib/postgresql/data
+      - ${FRESHRSS_CONFIG_PATH}/db:/var/lib/postgresql/data
     ports:
       - 5433:5432
     environment:
