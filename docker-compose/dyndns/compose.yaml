@@ -1,0 +1,35 @@
+services:
+  duckdns:
+    image: linuxserver/duckdns
+    container_name: duckdns
+    environment:
+      - PUID=${PUID}              # Remplace si nécessaire
+      - PGID=${PGID}              # Remplace si nécessaire
+      - TZ=Europe/Paris        # Ton fuseau horaire
+      - SUBDOMAINS=${SUBDOMAINS}
+      - TOKEN=${TOKEN}        # Depuis https://www.duckdns.org
+      - LOG_FILE=true
+    restart: unless-stopped
+  wireguard-ui:
+    image: ngoduykhanh/wireguard-ui:latest
+    container_name: wireguard-ui
+
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - "5000:5000"        # Interface Web (http://IP:5000)
+      - "51820:51820/udp"  # Port WireGuard
+    environment:
+      - WGUI_USERNAME=${WGUI_USERNAME}         # identifiant UI
+      - WGUI_PASSWORD=${WGUI_PASSWORD}      # mot de passe UI
+      - WGUI_LISTEN_PORT=${WGUI_LISTEN_PORT}
+      - WGUI_SERVER_INTERFACE=${WGUI_SERVER_INTERFACE}
+      - WGUI_SERVER_IPV4=${WGUI_SERVER_IPV4}
+      - WGUI_SERVER_IPV6=${WGUI_SERVER_IPV6}
+      - WGUI_DNS=${WGUI_DNS}
+      - WGUI_ENDPOINT=${WGUI_ENDPOINT}
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv6.conf.all.forwarding=1
+    restart: unless-stopped
