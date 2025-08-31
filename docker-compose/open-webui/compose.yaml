@@ -1,0 +1,11 @@
+services: 
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui 
+    volumes:
+      - /Users/elamrati/Documents/docker/open-webui:/app/backend/data 
+    ports:
+      - 3080:8080
+    restart: unless-stopped
+    environment:
+      - OLLAMA_API_BASE_URL=http://10.1.1.3:11434
