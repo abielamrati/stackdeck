@@ -34,7 +34,7 @@ services:
       - TZ=Europe/Paris
     volumes:
       - ${MULTIMEDIA_PATH}/deluge/config/:/config
-      - /Volumes/colisee/downloads/:/downloads
+      - ${COLISEE_PATH}/downloads/:/downloads
     restart: unless-stopped
 
   jellyfin:
@@ -45,7 +45,7 @@ services:
     volumes:
       - ${MULTIMEDIA_PATH}/jellyfin/config:/config
       - ${MULTIMEDIA_PATH}/jellyfin/cache:/cache
-      - /Volumes/colisee:/media
+      - ${COLISEE_PATH}:/media
     restart: always
   jackett:
     image: lscr.io/linuxserver/jackett:latest
