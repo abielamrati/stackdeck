@@ -35,7 +35,9 @@ services:
     volumes:
       - ${MULTIMEDIA_PATH}/deluge/config/:/config
       - ${COLISEE_PATH}/downloads/:/downloads
-    restart: unless-stopped
+    restart: always
+    depends_on:
+      - gluetun
 
   jellyfin:
     image: jellyfin/jellyfin:latest
